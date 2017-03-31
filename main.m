@@ -19,3 +19,4 @@ t = (1:T)/Fe; % Axe des temps
 %% Simulation de l'environnement %%
 
 % Création du bruit ambiant
+lol
