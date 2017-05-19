@@ -1,6 +1,12 @@
 # noise-sonar
-Simulation d'un sonar à bruit dans le cadre du projet de TAN Télécom Nancy 2017
 
+**Simulation d'un sonar à bruit**
+
+*Projet de TAN Télécom Nancy 2017*
+
+## Execute
+
+Lancez Matlab puis charger le script **sonar.m**, changez la valeur des variables si vous le souhaitez ou laissez celles par défaut. Cliquez ensuite sur *Run*.
 
 ## Marche à suivre (d'après A. Parodi)
 
@@ -13,7 +19,7 @@ et qui fournit la *réponse impulsionnelle de l'espace devant lui*, dont le maxi
 Simulation du bruit ambiant: signal aléatoire de densité de probabilité gaussienne et de densité spectrale de puissance à choisir.
 On utilise un générateur aléatoire dont la sortie est bruit blanc (donc dont les échantillons successifs sont statistiquement indépendants) envoyés vers un filtre
 dont la réponse fréquentielle correspond à la racine carrée de la densité spectrale de puissance désirée.
-.
+
 Le générateur aléatoire est gaussien, d'écart-type (donc de puissance) réglable.
 Le filtre peut être un passe-bas pour commencer, avec fréquence de coupure réglable.
 
@@ -50,7 +56,7 @@ Pour fixer les idées, la fréquence maximale contenue dans les signaux sonar es
 La distance maximale dmax = 3km, la vitesse c des ondes dans l'eau est indiquée dans le premier polycopié,
 T sera choisi de manière appropriée avec ces données.
 
-La fonction d'intercorrélation à utiliser est celle qualiifiée de "simplifiée" r(tau) dans le polycopié puisque le signal reçu est de durée finie; pour l'implémentation numérique,
+La fonction d'intercorrélation à utiliser est celle qualifiée de "simplifiée" r(tau) dans le polycopié puisque le signal reçu est de durée finie; pour l'implémentation numérique,
 elle peut s'exprimer avec une convolution, et le passage au numérique utilise simplement la correspondance entre convolution analogique et numérique.
 La taille des suites à intercorréler est très grande et donc une FFT est nécessaire pour faire le calcul: vous pouvez utiliser la convolution de matlab.
 
@@ -61,4 +67,4 @@ Ensuite calculez mathématiquement l'intercorrélation gamma(tau) entre x(t) et 
 à partir de la fonction de réflexion r(d) et des intercorrélations avec le bruit ambiiant (qui devrait s'affaiblir fortement)
 et l'autocorrélation du signal envoyé qui est un pic de largeur en principe très faible relativement aux détails de r(d).
 
-Attention, il y avait une coquille: l'affaiblissement dépend de 1/d avec d distance entre source et récepteur et pas 1/r.
+Attention, il y avait une coquille: l'affaiblissement dépend de 1/d avec d distance entre source et récepteur et pas 1/r. *(corrigé)*
