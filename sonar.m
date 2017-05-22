@@ -9,13 +9,13 @@
 %% Variables de la simulation %%
 
 % Sonar
-T = 0.15;          % Durée de l'onde sonore envoyée.
+T = 0.15;       % Durée de l'onde sonore envoyée.
 Te = 10;        % Durée d'écoute (finie pour la simulation) du sonar
 Ps = 0.002;     % Puissance moyenne (W) du bruit blanc du sonar = carré de l'écart type Bs. 
 W = 100000;     % Largeur de bande du filtre passe-bande : Fmax = f0 + W/2 => ici, W = 100000Hz car f0 = W/2 pour passe-bas
 f0 = W/2;       % Fréquence centrale du filtre passe-bande
 fc = W;         % Fréquence de coupure du filtre passe-bas
-seuil = 110;     % Seuil de détection pour la reconstruction du décor
+seuil = 110;    % Seuil de détection pour la reconstruction du décor
 
 % Variables du bruit ambiant
 DSP = 18;       % Densité Spectrale de Puissance (dB) désirée pour le bruit ambiant
@@ -125,7 +125,8 @@ axis([0,T,-0.2,0.2]);
 
 fprintf("Vitesse du son : %d m/s\n", c);
 
-% Tenir compte du PATHLOSS (affaiblissement en (1/d), omis pour l'instant
+% Tenir compte du PATHLOSS (affaiblissement du gain en 10*log(d) pour
+% chacun des signaux réfléchis)
     % Ajouter la perte à l'aller onde incidente (gain dép. du temps)
     PLa = 0;
     % Ajouter la perte au retour pnde réfléchie (gain dép. du temps)
@@ -238,13 +239,13 @@ axis([1,6,0,650]);
 figure(4);
 subplot(2,1,1);
 plot(tx,gamma)
-title('Intercorrélation entre signal émis et signal reçu');
+title('Intercorrélation entre signal émis et signal reçu (xcorr)');
 xlabel('Temps tx');
 ylabel('Intercorrélation');
 axis([1,12,0,65]);
 subplot(2,1,2);
 plot(tc,gamma_simpl)
-title('Convolution entre signal émis et signal reçu');
+title('Convolution entre signal émis et signal reçu (conv avec indice inversé pour y)');
 xlabel('Temps tc');
 ylabel('Convolution');
 axis([1,12,0,65]);   
