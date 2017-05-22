@@ -11,11 +11,10 @@
 % Sonar
 T = 0.15;          % Durée de l'onde sonore envoyée.
 Te = 10;        % Durée d'écoute (finie pour la simulation) du sonar
-Ps = 0.002;     % Puissance moyenne (W) du bruit blanc du sonar = carré de l'écart type Bs. 
+Ps = 0.001;     % Puissance moyenne (W) du bruit blanc du sonar = carré de l'écart type Bs. 
 W = 100000;     % Largeur de bande du filtre passe-bande : Fmax = f0 + W/2 => ici, W = 100000Hz car f0 = W/2 pour passe-bas
 f0 = W/2;       % Fréquence centrale du filtre passe-bande
 fc = W;         % Fréquence de coupure du filtre passe-bas
-seuil = 110;     % Seuil de détection pour la reconstruction du décor
 
 % Variables du bruit ambiant
 DSP = 18;       % Densité Spectrale de Puissance (dB) désirée pour le bruit ambiant
@@ -159,41 +158,32 @@ axis([0,Te,-0.2,0.2]);
     ylabel('Amplitude');
     axis([0,Te,-2,2]);
 
- % Intercorrélation "simplifiée" : convolution de matlab x(tau)*y(-tau)
-    % Construction du signal avec indices inversés
-    n = length(onde_recu);
-    onde_recu_inv = onde_recu(n:-1:1);
- 
+ % Intercorrélation "simplifiée" : convolution de matlab
     % gamma(Tau) = Somme (k = 0 : 1/Fe : T) { x(k)*y(k-Tau) }
     % Tau = t - theta, écart de temps de x(t) et y(theta) deux signaux
-    gamma_simpl = conv(onde_sonar, onde_recu_inv);
+    gamma_simpl = conv(onde_sonar, echo);
 
-    % Echelle de temps pour la convolution
-    tc = 1:1/Fe:Te+T+1;
-    
     % Affichage de l'intercorrélation
     subplot(7,1,5)
-    plot(tc,gamma_simpl)
+    plot(gamma_simpl)
     title('Convolution entre signal émis et signal reçu');
-    xlabel('Temps tc');
+    xlabel('Temps');
     ylabel('Convolution');
-    axis([1,12,0,50]);   
+    axis([1,2500000,-1,1]);   
     
     
 % Intercorrélation 
     % Utilisation de la fonction xcorr de matlab
-    gamma = xcorr(onde_sonar, onde_recu);
-    
-    % Echelle de temps pour l'intercorrélation
-    tx = 1:1/Fe:2*Te+1;
+    gamma = xcorr(onde_sonar, echo);
+tx = 1:1/Fe:2*Te+1;
 
     % Affichage de l'intercorrélation
     subplot(7,1,6)
     plot(tx,gamma)
-    title('Intercorrélation entre signal émis et signal reçu');
-    xlabel('Temps tx');
+    title('Intercorrélation simplifiée entre signal émis et signal reçu');
+    xlabel('Temps');
     ylabel('Intercorrélation');
-    axis([1,12,0,50]);
+    %axis([1,5000000,-1,1]);
     
 % Autocorrélation du signal envoyé
     % Pic de largeur très faible deant les détails de r(d)
@@ -205,19 +195,14 @@ axis([0,Te,-0.2,0.2]);
     title('Autocorrélation du signal émis');
     xlabel('Temps');
     ylabel('Autocorrelation');
-    %axis([1,80000,-1,50]);
+    axis([1,100000,-1,50]);
     
  
 %% Reconstruction finale de r(d)
  
-% Calcul de la distance en tenant compte de c et de dt : d = c * dt / 2
+% Calcul de la distance en tenant compte de c et de dt : d = c * dt  
 rbis = c * gamma_simpl/200;
  
-% Reverse
-n = length(rbis);
-rbis_inv = rbis(n:-1:1);
-rbis_inv(rbis_inv < seuil) = 0;
-
 % Affichage du résultat final
 figure(3);
 subplot(2,1,1)
@@ -228,24 +213,8 @@ ylabel('Coeff de réflexion r');
 axis([0,dmax,0,1.0]);
 
 subplot(2,1,2)
-plot(tc,rbis_inv)
+plot(rbis)
 title('Reconstitution du décor');
 xlabel('Distance d (unité arbitraire)');
 ylabel('Réflexion reçue');
-axis([1,6,0,650]);
-
-% Comparaison des deux méthodes
-figure(4);
-subplot(2,1,1);
-plot(tx,gamma)
-title('Intercorrélation entre signal émis et signal reçu');
-xlabel('Temps tx');
-ylabel('Intercorrélation');
-axis([1,12,0,65]);
-subplot(2,1,2);
-plot(tc,gamma_simpl)
-title('Convolution entre signal émis et signal reçu');
-xlabel('Temps tc');
-ylabel('Convolution');
-axis([1,12,0,65]);   
-    
+axis([1,1150000,0,10]);
